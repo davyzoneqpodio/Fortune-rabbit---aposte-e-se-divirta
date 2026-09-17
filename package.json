@@ -1,0 +1,17 @@
+{
+  "name": "fortune-rabbit",
+  "version": "1.2.0",
+  "description": "Servidor online do jogo Fortune Rabbit",
+  "main": "servidor.js",
+  "scripts": {
+    "start": "node servidor.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "ws": "^8.18.2"
+  }
+}

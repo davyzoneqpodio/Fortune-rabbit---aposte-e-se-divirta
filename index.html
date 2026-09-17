@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fortune Rabbit — Competição entre amigos</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#4b1420,#160b12 58%,#080609);color:#fff;font-family:Arial,sans-serif;padding:16px;min-height:100vh}
+button,input{font:inherit}.app{max-width:1050px;margin:auto}
+.screen{display:none}.screen.active{display:block}
+.menu-card{max-width:720px;margin:8vh auto 0;background:#120c11;border:1px solid #452530;border-radius:24px;overflow:hidden;box-shadow:0 20px 70px #000b}
+.menu-hero{text-align:center;padding:30px 18px;background:linear-gradient(180deg,#6d1729,#35101b);border-bottom:1px solid #743345}
+.rabbit{font-size:78px;filter:drop-shadow(0 5px 10px #0008)}
+.title{font-size:38px;font-weight:900;color:#ffd75c;text-shadow:0 2px #6c1d25}.subtitle{color:#e8b9c2;font-size:14px;margin-top:5px}
+.menu-body{padding:22px}.menu-body h2{text-align:center;margin:0 0 14px}.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mode-btn,.back-btn,.cashout-btn,.rank-btn{border:0;border-radius:13px;padding:16px;font-size:17px;font-weight:900;color:#fff;cursor:pointer}
+.mode-btn{background:linear-gradient(#d93850,#9f1e35);min-height:110px}.mode-btn.online{background:linear-gradient(#9b5ad8,#633393)}.mode-btn.room{background:linear-gradient(#2b9c92,#17665f)}
+.mode-btn span{display:block;font-size:31px;margin-bottom:6px}.muted{color:#aa919a;font-size:12px;text-align:center;margin-top:12px}
+.name-card{max-width:520px;margin:12vh auto 0;background:#120c11;border:1px solid #452530;border-radius:20px;padding:24px;box-shadow:0 20px 70px #000b}.name-card h2{margin-top:0}.name-card label{display:block;color:#c7b1b9;font-size:13px;margin-bottom:7px}.name-card input{background:#0d090c;color:#fff;border:1px solid #54333f;border-radius:10px;padding:13px;width:100%;font-size:18px;font-weight:bold}.name-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.primary{background:linear-gradient(#d93850,#9f1e35);color:#fff;border:0;border-radius:12px;padding:14px;font-weight:900;cursor:pointer}.secondary{background:#302029;color:#fff;border:1px solid #54333f;border-radius:12px;padding:14px;font-weight:900;cursor:pointer}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}header h1{margin:0;font-size:28px}.head-actions{display:flex;gap:8px;align-items:center}.pill{background:#1b1218;border:1px solid #5b3340;padding:10px 13px;border-radius:12px;font-size:13px}.saldo{background:#1b1218;border:1px solid #5b3340;padding:12px 16px;border-radius:12px;font-weight:bold}.saldo b{color:#ffd34d;font-size:20px}
+.game{background:#120c11;border:1px solid #452530;border-radius:20px;overflow:hidden;box-shadow:0 20px 70px #000b}.banner{text-align:center;padding:20px 10px;background:linear-gradient(180deg,#6d1729,#35101b);border-bottom:1px solid #743345}
+.machine{padding:18px}.reels{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px;background:#2a151d;border:4px solid #a97532;border-radius:15px;box-shadow:inset 0 0 25px #000}.reel{height:130px;border-radius:10px;background:linear-gradient(#fff8df,#f0dfb1);display:flex;align-items:center;justify-content:center;font-size:58px;position:relative;overflow:hidden;box-shadow:inset 0 0 12px #8b6d39}.reel span{display:block;transition:transform .1s}.win{animation:flash .45s 3}@keyframes flash{50%{filter:brightness(1.8);transform:scale(1.08)}}
+.info{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px;margin-top:12px}.card{background:#1a1117;border:1px solid #3a2630;border-radius:12px;padding:12px}.card small{color:#a88e98}.card b{display:block;font-size:19px;margin-top:4px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.bet{background:#1a1117;border:1px solid #3a2630;border-radius:12px;padding:12px;grid-column:1/-1}.bet label{display:block;color:#a88e98;font-size:12px;margin-bottom:6px}input{width:100%;background:#0d090c;color:white;border:1px solid #54333f;border-radius:9px;padding:12px;font-size:17px;font-weight:bold}.quick{display:flex;gap:7px;margin-top:7px}.quick button{flex:1;background:#302029;color:#fff;border:1px solid #54333f;border-radius:8px;padding:8px;font-weight:bold;cursor:pointer}button.main{border:0;border-radius:12px;padding:15px;font-size:17px;font-weight:900;color:#fff;cursor:pointer}#spin{background:linear-gradient(#d93850,#9f1e35)}#double{background:#b77b20}button:disabled{opacity:.4;cursor:not-allowed}.message{text-align:center;min-height:52px;padding:12px;color:#ffd75c;font-weight:bold;font-size:18px}.paytable{margin-top:12px;background:#170e13;border:1px solid #39232d;border-radius:12px;padding:12px}.paytable h2{font-size:15px;margin:0 0 9px}.symbols{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.sym{text-align:center;padding:8px;border-radius:8px;background:#24151c;font-size:12px}.sym span{display:block;font-size:27px;margin-bottom:3px}.history{margin:0 18px 18px;background:#0d090c;border:1px solid #33212a;border-radius:12px;overflow:hidden}.history h2{font-size:14px;margin:0;padding:10px;border-bottom:1px solid #33212a}.history div{padding:8px 11px;border-bottom:1px solid #ffffff08;font-size:13px;color:#cbbec4}.note{text-align:center;color:#806d75;font-size:12px;padding:0 15px 18px}
+.cashout-area{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin-top:12px}.cashout-btn{background:linear-gradient(#2dba77,#19714b)}.rank-btn{background:linear-gradient(#6e71ea,#494cb0)}
+.rank-panel{margin-top:12px;background:#0d090c;border:1px solid #33212a;border-radius:14px;overflow:hidden}.rank-head{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid #33212a}.rank-head h2{font-size:16px;margin:0}.rank-head small{color:#8d7d84}.ranking-row{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:11px 14px;border-bottom:1px solid #ffffff08}.ranking-row:last-child{border-bottom:0}.pos{font-weight:900;color:#ffd75c}.rank-name{font-weight:bold}.rank-money{font-weight:900;color:#8ff0b9}.room-board{margin-top:12px;background:#0d090c;border:1px solid #3b2931;border-radius:14px;overflow:hidden}.room-board .rank-head{background:#170e13}.room-row{display:grid;grid-template-columns:42px 1fr auto;gap:9px;align-items:center;padding:10px 12px;border-bottom:1px solid #ffffff08}.room-row:last-child{border-bottom:0}.room-row.me{background:#2a171e}.room-row .mini{display:block;color:#8f7f86;font-size:11px;margin-top:3px}.room-profit{font-weight:900;text-align:right}.profit-positive{color:#8ff0b9}.profit-negative{color:#ff8e9b}.online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#777;margin-right:5px}.online-dot.on{background:#70e59c}.competition-note{padding:9px 12px;color:#9d8b93;font-size:11px;border-top:1px solid #ffffff08}.room-lobby-profit{font-size:14px!important}.room-lobby-status{font-size:10px;color:#8f7f86;margin-left:6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#1b1218;border:1px solid #64404c;padding:12px 16px;border-radius:12px;box-shadow:0 15px 45px #000a;opacity:0;pointer-events:none;transition:.25s;z-index:10;text-align:center;max-width:90%}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){.mode-grid{grid-template-columns:1fr}.cashout-area{grid-template-columns:1fr}.info{grid-template-columns:1fr 1fr}.symbols{grid-template-columns:repeat(3,1fr)}header{align-items:flex-start;flex-direction:column}.head-actions{width:100%;justify-content:space-between}.reel{height:105px;font-size:45px}.name-actions{grid-template-columns:1fr}}
+.room-note{color:#aa919a;font-size:12px;text-align:center;margin-top:8px}</style>
+</head>
+<body>
+<div class="app">
+<section id="menuScreen" class="screen active">
+  <div class="menu-card">
+    <div class="menu-hero"><div class="rabbit">🐰</div><div class="title">FORTUNE RABBIT</div><div class="subtitle">A resenha começa aqui</div></div>
+    <div class="menu-body"><h2>Modo de jogo</h2><div class="mode-grid">
+      <button class="mode-btn" onclick="startOffline()"><span>🎮</span>JOGAR OFFLINE<small>Jogue sem ranking compartilhado</small></button>
+      <button class="mode-btn online" onclick="showNameScreen()"><span>🌐</span>JOGAR ONLINE<small>Escolha seu nome e registre seus ganhos</small></button>
+      <button class="mode-btn room" onclick="showRoomScreen()"><span>👥</span>JOGAR SALA<small>Crie ou entre em uma sala com amigos</small></button>
+    </div><div class="muted">Nas salas, cada jogador joga de forma independente e o placar compara o lucro da sessão em tempo real. Tudo é fictício.</div></div><div class="muted">Fortune Rabbit v1.2 • salas até 7 jogadores</div>
+  </div>
+</section>
+
+<section id="nameScreen" class="screen">
+  <div class="name-card"><h2>🌐 Identifique seu jogador</h2><p class="muted" style="text-align:left;margin:0 0 14px">Esse nome aparecerá no ranking desta versão do jogo.</p>
+    <label for="playerName">Nome do jogador</label><input id="playerName" maxlength="18" autocomplete="off" placeholder="Ex.: CoelhoMaster">
+    <div class="name-actions"><button class="secondary" onclick="goMenu()">VOLTAR</button><button class="primary" onclick="startOnline()">ENTRAR NO ONLINE</button></div>
+  </div>
+</section>
+
+
+<section id="roomScreen" class="screen">
+  <div class="name-card">
+    <h2>👥 Jogar Sala</h2>
+    <p class="muted" style="text-align:left;margin:0 0 14px">
+      Cada um joga sua própria máquina e compete pelo maior lucro.
+    </p>
+    <div class="name-actions">
+      <button class="primary" onclick="createRoom()">➕ CRIAR SALA</button>
+      <button class="secondary" onclick="showJoinRoom()">🔑 ENTRAR EM SALA</button>
+    </div>
+    <div id="roomJoinBox" style="display:none;margin-top:16px">
+      <label for="roomCodeInput">Código da sala</label>
+      <input id="roomCodeInput" maxlength="6" autocomplete="off" placeholder="Ex.: A7K92F"
+             style="text-transform:uppercase">
+      <div class="name-actions">
+        <button class="secondary" onclick="showRoomOptions()">VOLTAR</button>
+        <button class="primary" onclick="joinRoom()">ENTRAR</button>
+      </div>
+    </div>
+    <div id="roomLobby" style="display:none;margin-top:16px">
+      <div class="card">
+        <small>Código da sala</small>
+        <b id="roomCodeLabel" style="font-size:28px;letter-spacing:3px">------</b>
+        <button class="secondary" style="width:100%;margin-top:10px" onclick="copyRoomCode()">📋 COPIAR CÓDIGO</button>
+      </div>
+      <div class="rank-panel" style="display:block;margin-top:10px">
+        <div class="rank-head"><h2>👥 Jogadores</h2><small id="roomStatus">Aguardando...</small></div>
+        <div id="roomPlayers"></div>
+      </div>
+      <div class="name-actions">
+        <button class="secondary" onclick="leaveRoom()">SAIR DA SALA</button>
+        <button class="primary" id="roomStartBtn" onclick="startRoomGame()">🎮 COMEÇAR</button>
+      </div>
+    </div>
+    <button id="roomBackBtn" class="secondary" style="width:100%;margin-top:10px" onclick="goMenu()">↩ MENU INICIAL</button>
+  </div>
+</section>
+
+<section id="gameScreen" class="screen">
+<header><h1>🐰 Fortune Rabbit</h1><div class="head-actions"><div class="pill">Jogador: <b id="playerLabel">Offline</b></div><div class="pill" id="modeLabel">OFFLINE</div><div class="pill" id="roomLabel" style="display:none">SALA: —</div><div class="saldo">Saldo fictício: <b id="saldo">1.000,00</b></div></div></header>
+<div class="game">
+<div class="banner"><div class="rabbit">🐰</div><div class="title">FORTUNE RABBIT</div><div class="subtitle">Máquina de prêmios • competição entre amigos</div></div>
+<div class="machine">
+<div class="reels" id="reels"></div>
+<div class="message" id="msg">Escolha o valor e gire os rolos.</div>
+<div class="info"><div class="card"><small>Rodada</small><b id="betshow">10,00</b></div><div class="card"><small>Prêmio</small><b id="prize">0,00</b></div><div class="card"><small>Última rodada</small><b id="last">—</b></div><div class="card"><small>Ganho na sessão</small><b id="sessionWon">0,00</b></div></div>
+<div class="controls"><div class="bet"><label>Valor da rodada</label><input id="bet" type="number" min="1" step="1" value="10"><div class="quick"><button onclick="setBet(5)">5</button><button onclick="setBet(10)">10</button><button onclick="setBet(25)">25</button><button onclick="setBet(50)">50</button></div></div><button class="main" id="spin">GIRAR</button><button class="main" id="double">DOBRAR VALOR</button></div>
+<div class="cashout-area"><button class="cashout-btn" id="cashout" onclick="cashOut()">💸 SACAR GANHOS</button><button class="rank-btn" onclick="openRanking()">🏆 VER RANKING</button></div>
+<div class="paytable"><h2>Tabela de prêmios — 3 ou mais símbolos iguais</h2><div class="symbols" id="symbols"></div></div>
+</div>
+<div class="history"><h2>Histórico da sessão</h2><div id="history"></div></div>
+<div class="note">Entretenimento com créditos fictícios. Não há depósito, saque ou pagamento real. A sala existe para a competição entre amigos.</div>
+</div>
+<div id="roomCompetition" class="room-board" style="display:none">
+  <div class="rank-head"><h2>🔥 Competição da sala</h2><small id="competitionHint">Lucro atual da sessão</small></div>
+  <div id="competitionList"></div>
+  <div class="competition-note">Cada jogador tem sua própria máquina. O placar compara o desempenho da sessão em tempo real.</div>
+</div>
+<div id="rankingPanel" class="rank-panel" style="display:none"><div class="rank-head"><h2 id="rankingTitle">🏆 Ranking global</h2><small id="rankHint">Pontuação por ganhos da sessão</small></div><div id="rankingList"></div></div>
+<div style="display:flex;gap:8px;margin-top:10px"><button class="secondary" onclick="goMenu()">↩ MENU INICIAL</button><button class="secondary" onclick="newSession()">🔄 NOVA SESSÃO</button></div>
+</section>
+</div><div id="toast" class="toast"></div>
+<script>
+const symbols=[
+  {e:'🐰',name:'Coelho',mult:15},
+  {e:'🧧',name:'Envelope',mult:10},
+  {e:'🪙',name:'Moeda',mult:8},
+  {e:'🥕',name:'Cenoura',mult:6},
+  {e:'🍊',name:'Laranja',mult:4}
+];
+
+let balance=1000,spinning=false,sessionWon=0,totalWagered=0;
+let mode='offline',playerName='Offline';
+let roomCode='',roomHost=false,roomPlayers=[],roomPoll=null,roomPlayerId='';
+let sessionSpins=0;
+let roomScoreTimer=null;
+let roomSocket=null,roomSocketRetry=null,roomSocketBackoff=1000;
+
+const els={
+  reels:document.getElementById('reels'),
+  bet:document.getElementById('bet'),
+  saldo:document.getElementById('saldo'),
+  msg:document.getElementById('msg'),
+  prize:document.getElementById('prize'),
+  last:document.getElementById('last'),
+  betshow:document.getElementById('betshow'),
+  history:document.getElementById('history'),
+  sessionWon:document.getElementById('sessionWon'),
+  cashout:document.getElementById('cashout'),
+  rankPanel:document.getElementById('rankingPanel'),
+  rankList:document.getElementById('rankingList'),
+  roomCompetition:document.getElementById('roomCompetition'),
+  competitionList:document.getElementById('competitionList')
+};
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+async function goMenu(){
+  if(spinning)return;
+  if(roomCode) await leaveRoom(true);
+  show('menuScreen');
+}
+
+function showNameScreen(){
+  show('nameScreen');
+  setTimeout(()=>document.getElementById('playerName').focus(),80);
+}
+
+function startOffline(){
+  mode='offline';
+  playerName='Offline';
+  prepareGame();
+}
+
+function startOnline(){
+  const n=document.getElementById('playerName').value.trim();
+  if(!n){toast('Digite um nome para entrar no online.');return}
+  playerName=n.slice(0,18);
+  mode='online';
+  prepareGame();
+}
+
+function showRoomScreen(){
+  if(spinning)return;
+  show('roomScreen');
+  showRoomOptions();
+}
+
+function showRoomOptions(){
+  document.getElementById('roomJoinBox').style.display='none';
+  document.getElementById('roomLobby').style.display='none';
+  document.getElementById('roomBackBtn').style.display='block';
+}
+
+function showJoinRoom(){
+  document.getElementById('roomJoinBox').style.display='block';
+  document.getElementById('roomLobby').style.display='none';
+  document.getElementById('roomBackBtn').style.display='none';
+  setTimeout(()=>document.getElementById('roomCodeInput').focus(),80);
+}
+
+function roomHeaders(){
+  const headers={'Content-Type':'application/json'};
+  if(roomPlayerId) headers['X-Player-Id']=roomPlayerId;
+  return headers;
+}
+
+async function roomApi(path, options={}){
+  try{
+    const r=await fetch(path,{
+      ...options,
+      headers:{...roomHeaders(),...(options.headers||{})}
+    });
+    const data=await r.json().catch(()=>({}));
+    return {ok:r.ok,data};
+  }catch(e){
+    return {ok:false,data:{error:'Servidor indisponível'}};
+  }
+}
+
+function normalizeRoomCode(v){
+  return String(v||'')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g,'')
+    .slice(0,8);
+}
+
+async function createRoom(){
+  const n=document.getElementById('playerName').value.trim() || prompt('Digite seu nome:') || '';
+  if(!n.trim()){toast('Digite um nome para criar a sala.');return}
+
+  playerName=n.trim().slice(0,18);
+
+  const r=await roomApi('/api/rooms',{
+    method:'POST',
+    body:JSON.stringify({name:playerName})
+  });
+
+  if(!r.ok){
+    toast(r.data.error||'Não foi possível criar a sala.');
+    return;
+  }
+
+  roomCode=r.data.code;
+  roomPlayerId=r.data.playerId||'';
+  roomHost=true;
+  roomPlayers=r.data.players||[];
+  mode='room';
+
+  saveRoomSession();
+  renderRoomLobby();
+  startRoomPolling();
+  connectRoomSocket();
+}
+
+async function joinRoom(){
+  const code=normalizeRoomCode(document.getElementById('roomCodeInput').value);
+
+  if(code.length<4){
+    toast('Digite um código de sala válido.');
+    return;
+  }
+
+  const n=document.getElementById('playerName').value.trim() || prompt('Digite seu nome:') || '';
+  if(!n.trim()){
+    toast('Digite seu nome para entrar na sala.');
+    return;
+  }
+
+  playerName=n.trim().slice(0,18);
+
+  const r=await roomApi('/api/rooms/'+encodeURIComponent(code)+'/join',{
+    method:'POST',
+    body:JSON.stringify({name:playerName})
+  });
+
+  if(!r.ok){
+    toast(r.data.error||'Não foi possível entrar na sala.');
+    return;
+  }
+
+  roomCode=code;
+  roomPlayerId=r.data.playerId||'';
+  roomHost=!!r.data.youAreHost;
+  roomPlayers=r.data.players||[];
+  mode='room';
+
+  saveRoomSession();
+  renderRoomLobby();
+  startRoomPolling();
+  connectRoomSocket();
+}
+
+function renderRoomLobby(){
+  document.getElementById('roomJoinBox').style.display='none';
+  document.getElementById('roomLobby').style.display='block';
+  document.getElementById('roomBackBtn').style.display='none';
+  document.getElementById('roomCodeLabel').textContent=roomCode;
+  document.getElementById('roomStartBtn').style.display=roomHost?'block':'none';
+  document.getElementById('roomStatus').textContent=roomHost?'Você é o anfitrião':'Aguardando o anfitrião';
+  renderRoomPlayers();
+}
+
+function roomSortedPlayers(){
+  return [...roomPlayers].sort((a,b)=>{
+    const profitDiff=Number(b.profit||0)-Number(a.profit||0);
+    if(profitDiff!==0)return profitDiff;
+    return String(a.name||'').localeCompare(String(b.name||''),'pt-BR');
+  });
+}
+
+function profitText(value){
+  const n=Number(value)||0;
+  return `${n>=0?'+':''}${money(n)}`;
+}
+
+function renderRoomPlayers(){
+  const list=document.getElementById('roomPlayers');
+
+  if(!roomPlayers.length){
+    list.innerHTML='<div class="ranking-row"><div class="pos">—</div><div class="rank-name">Nenhum jogador.</div><div></div></div>';
+    return;
+  }
+
+  const data=roomSortedPlayers();
+  list.innerHTML=data.map((p,i)=>`
+    <div class="ranking-row">
+      <div class="pos">#${i+1}</div>
+      <div class="rank-name">${escapeHtml(p.name)}${p.host?' 👑':''}</div>
+      <div class="rank-money room-lobby-profit">${profitText(p.profit)}</div>
+    </div>
+  `).join('');
+}
+
+function renderCompetition(){
+  if(mode!=='room'||!roomCode){
+    els.roomCompetition.style.display='none';
+    return;
+  }
+
+  els.roomCompetition.style.display='block';
+  const data=roomSortedPlayers();
+
+  if(!data.length){
+    els.competitionList.innerHTML='<div class="room-row"><div>#</div><div>Nenhum jogador conectado.</div><div>—</div></div>';
+    return;
+  }
+
+  els.competitionList.innerHTML=data.map((p,i)=>{
+    const me=p.id===roomPlayerId;
+    const profit=Number(p.profit)||0;
+    return `
+      <div class="room-row ${me?'me':''}">
+        <div class="pos">#${i+1}</div>
+        <div>
+          <strong>${escapeHtml(p.name)}${me?' (você)':''}${p.host?' 👑':''}</strong>
+          <span class="mini"><span class="online-dot ${p.active?'on':''}"></span>${p.active?'jogando agora':'sem atividade recente'} • ${p.spins||0} rodada(s)</span>
+        </div>
+        <div class="room-profit ${profit>=0?'profit-positive':'profit-negative'}">${profitText(profit)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function saveRoomSession(){
+  try{
+    sessionStorage.setItem('fortuneRabbitRoom',JSON.stringify({
+      code:roomCode,playerId:roomPlayerId,name:playerName
+    }));
+  }catch{}
+}
+
+function clearRoomSession(){
+  try{sessionStorage.removeItem('fortuneRabbitRoom')}catch{}
+}
+
+function startRoomPolling(){
+  clearInterval(roomPoll);
+  roomPoll=setInterval(refreshRoom,5000);
+  refreshRoom();
+}
+
+async function refreshRoom(){
+  if(!roomCode)return;
+
+  const r=await roomApi('/api/rooms/'+encodeURIComponent(roomCode));
+  if(!r.ok){
+    if(r.data?.error==='Sala não encontrada.'){
+      handleRoomClosed('A sala não existe mais.');
+    }
+    return;
+  }
+
+  roomPlayers=r.data.players||[];
+  roomHost=!!r.data.youAreHost;
+  saveRoomSession();
+
+  if(r.data.started && !document.getElementById('gameScreen').classList.contains('active')){
+    prepareGame();
+    return;
+  }
+
+  if(document.getElementById('roomLobby').style.display!=='none'){
+    renderRoomLobby();
+  }
+
+  renderCompetition();
+}
+
+function wsEndpoint(){
+  const protocol=location.protocol==='https:'?'wss:':'ws:';
+  return `${protocol}//${location.host}/ws?code=${encodeURIComponent(roomCode)}&playerId=${encodeURIComponent(roomPlayerId)}`;
+}
+
+function closeRoomSocket(){
+  clearTimeout(roomSocketRetry);
+  roomSocketRetry=null;
+  if(roomSocket){
+    roomSocket.onclose=null;
+    try{roomSocket.close()}catch{}
+    roomSocket=null;
+  }
+}
+
+function scheduleRoomSocketReconnect(){
+  clearTimeout(roomSocketRetry);
+  if(!roomCode||!roomPlayerId)return;
+
+  const delay=roomSocketBackoff;
+  roomSocketBackoff=Math.min(roomSocketBackoff*2,15000);
+  roomSocketRetry=setTimeout(connectRoomSocket,delay);
+}
+
+function connectRoomSocket(){
+  if(!roomCode||!roomPlayerId)return;
+  closeRoomSocket();
+
+  try{
+    const ws=new WebSocket(wsEndpoint());
+    roomSocket=ws;
+
+    ws.onopen=()=>{
+      roomSocketBackoff=1000;
+      try{ws.send(JSON.stringify({type:'ping'}))}catch{}
+    };
+
+    ws.onmessage=(event)=>{
+      let data;
+      try{data=JSON.parse(event.data)}catch{return}
+
+      if(data.type==='pong'||data.type==='room:connected'){
+        if(data.players){
+          roomPlayers=data.players||[];
+          roomHost=!!data.youAreHost;
+        }
+        return;
+      }
+
+      if(data.type==='room:error'){
+        toast(data.error||'Conexão da sala inválida.');
+        return;
+      }
+
+      if(data.type==='room:closed'){
+        handleRoomClosed(data.reason==='Sala expirada'?'A sala expirou por inatividade.':'A sala foi encerrada.');
+        return;
+      }
+
+      if(data.type==='room:update'||data.type==='room:started'){
+        roomPlayers=data.players||[];
+        roomHost=!!data.youAreHost;
+        saveRoomSession();
+
+        if(data.started && !document.getElementById('gameScreen').classList.contains('active')){
+          clearInterval(roomPoll);
+          roomPoll=null;
+          prepareGame();
+          return;
+        }
+
+        if(document.getElementById('roomLobby').style.display!=='none'){
+          renderRoomLobby();
+        }
+        renderCompetition();
+      }
+    };
+
+    ws.onclose=()=>{
+      if(roomSocket===ws)roomSocket=null;
+      scheduleRoomSocketReconnect();
+    };
+
+    ws.onerror=()=>{};
+  }catch{
+    scheduleRoomSocketReconnect();
+  }
+}
+
+function handleRoomClosed(message){
+  clearInterval(roomPoll);
+  roomPoll=null;
+  clearTimeout(roomScoreTimer);
+  roomScoreTimer=null;
+  closeRoomSocket();
+  clearRoomSession();
+  roomCode='';
+  roomHost=false;
+  roomPlayers=[];
+  roomPlayerId='';
+  mode='offline';
+  show('menuScreen');
+  toast(message);
+}
+
+async function startRoomGame(){
+  if(!roomCode||!roomHost)return;
+
+  const r=await roomApi('/api/rooms/'+encodeURIComponent(roomCode)+'/start',{
+    method:'POST',
+    body:'{}'
+  });
+
+  if(!r.ok){
+    toast(r.data.error||'Não foi possível iniciar a sala.');
+    return;
+  }
+
+  clearInterval(roomPoll);
+  roomPoll=null;
+  prepareGame();
+}
+
+async function leaveRoom(silent=false){
+  if(!roomCode){
+    if(!silent) show('menuScreen');
+    return;
+  }
+
+  await roomApi('/api/rooms/'+encodeURIComponent(roomCode)+'/leave',{
+    method:'POST',
+    body:JSON.stringify({playerId:roomPlayerId})
+  });
+
+  clearInterval(roomPoll);
+  roomPoll=null;
+  clearTimeout(roomScoreTimer);
+  roomScoreTimer=null;
+  closeRoomSocket();
+  clearRoomSession();
+  roomCode='';
+  roomHost=false;
+  roomPlayers=[];
+  roomPlayerId='';
+
+  if(!silent) show('menuScreen');
+}
+
+async function copyRoomCode(){
+  try{
+    await navigator.clipboard.writeText(roomCode);
+    toast('Código copiado: '+roomCode);
+  }catch{
+    toast('Código da sala: '+roomCode);
+  }
+}
+
+async function registerRoomGain(gain){
+  if(mode!=='room'||!roomCode||!roomPlayerId)return {ok:false};
+
+  return await roomApi('/api/rooms/'+encodeURIComponent(roomCode)+'/gain',{
+    method:'POST',
+    body:JSON.stringify({playerId:roomPlayerId,gain:Number(gain)||0})
+  });
+}
+
+async function getRoomRanking(){
+  const r=await roomApi('/api/rooms/'+encodeURIComponent(roomCode));
+  return r.ok?(r.data.players||[]):[];
+}
+
+async function syncRoomScore(){
+  if(mode!=='room'||!roomCode||!roomPlayerId)return;
+
+  const payload={
+    playerId:roomPlayerId,
+    balance:Number(balance)||0,
+    spins:Number(sessionSpins)||0,
+    wagered:Number(totalWagered)||0,
+    prizes:Number(sessionWon)||0
+  };
+
+  const r=await roomApi('/api/rooms/'+encodeURIComponent(roomCode)+'/score',{
+    method:'POST',
+    body:JSON.stringify(payload)
+  });
+
+  if(r.ok){
+    roomPlayers=r.data.players||roomPlayers;
+    renderCompetition();
+  }else if(r.data?.error==='Sala não encontrada.') {
+    handleRoomClosed('A sala não existe mais.');
+  }
+}
+
+function queueRoomScoreSync(){
+  if(mode!=='room')return;
+  clearTimeout(roomScoreTimer);
+  roomScoreTimer=setTimeout(()=>{ syncRoomScore(); },120);
+}
+
+function prepareGame(){
+  balance=1000;
+  sessionWon=0;
+  totalWagered=0;
+  sessionSpins=0;
+  spinning=false;
+
+  els.bet.value=10;
+  els.prize.textContent='0,00';
+  els.last.textContent='—';
+  els.msg.textContent='Escolha o valor e gire os rolos.';
+  document.getElementById('playerLabel').textContent=playerName;
+  document.getElementById('modeLabel').textContent=
+    mode==='online'?'ONLINE':(mode==='room'?'SALA':'OFFLINE');
+
+  document.getElementById('roomLabel').style.display=mode==='room'?'block':'none';
+  document.getElementById('roomLabel').textContent=mode==='room'?'SALA: '+roomCode:'';
+
+  els.history.innerHTML='';
+  els.rankPanel.style.display='none';
+  renderCompetition();
+
+  document.getElementById('spin').disabled=false;
+  document.getElementById('double').disabled=false;
+  document.getElementById('cashout').disabled=false;
+  document.getElementById('cashout').textContent=mode==='room'?'💸 FINALIZAR E SAIR':'💸 SACAR GANHOS';
+
+  els.reels.innerHTML='';
+
+  for(let i=0;i<5;i++){
+    const d=document.createElement('div');
+    d.className='reel';
+    d.innerHTML='<span>🐰</span>';
+    els.reels.appendChild(d);
+  }
+
+  update();
+  addHistory(`🎮 ${mode==='online'?'Sessão online':mode==='room'?'Sessão em sala':'Sessão offline'} iniciada com 1.000,00 créditos fictícios.`);
+  show('gameScreen');
+  if(mode==='room')syncRoomScore();
+}
+
+function newSession(){
+  if(spinning)return;
+  prepareGame();
+}
+
+function money(n){
+  return Number(n).toLocaleString('pt-BR',{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+}
+
+function update(){
+  els.saldo.textContent=money(balance);
+  els.betshow.textContent=money(Number(els.bet.value)||0);
+  els.sessionWon.textContent=money(sessionWon);
+}
+
+function setBet(n){
+  if(!spinning){
+    els.bet.value=n;
+    update();
+  }
+}
+
+function addHistory(t){
+  const d=document.createElement('div');
+  d.textContent=t;
+  els.history.prepend(d);
+  while(els.history.children.length>12)els.history.lastChild.remove();
+}
+
+function toast(t){
+  const x=document.getElementById('toast');
+  x.textContent=t;
+  x.classList.add('show');
+  clearTimeout(window.__toast);
+  window.__toast=setTimeout(()=>x.classList.remove('show'),2600);
+}
+
+function drawSymbol(){
+  const r=Math.random();
+  if(r<.30)return symbols[4];
+  if(r<.54)return symbols[3];
+  if(r<.73)return symbols[2];
+  if(r<.88)return symbols[1];
+  return symbols[0];
+}
+
+const serverAvailable=location.protocol!=='file:';
+
+function addToLocalRanking(name,gain){
+  const key='fortuneRabbitRanking';
+  let data=[];
+
+  try{
+    data=JSON.parse(localStorage.getItem(key)||'[]');
+  }catch{}
+
+  const idx=data.findIndex(x=>x.name.toLowerCase()===name.toLowerCase());
+
+  if(idx>=0){
+    data[idx].gain=Math.max(0,Number(data[idx].gain||0)+gain);
+  }else{
+    data.push({name,gain});
+  }
+
+  data.sort((a,b)=>b.gain-a.gain);
+  data=data.slice(0,20);
+  localStorage.setItem(key,JSON.stringify(data));
+  return data;
+}
+
+function getLocalRanking(){
+  try{
+    return JSON.parse(localStorage.getItem('fortuneRabbitRanking')||'[]');
+  }catch{
+    return [];
+  }
+}
+
+async function getRanking(){
+  if(serverAvailable){
+    try{
+      const r=await fetch('/api/ranking',{cache:'no-store'});
+      if(r.ok){
+        document.getElementById('rankHint').textContent='Ranking compartilhado pelo servidor';
+        return await r.json();
+      }
+    }catch{}
+  }
+
+  document.getElementById('rankHint').textContent='Ranking local de demonstração';
+  return getLocalRanking();
+}
+
+async function registerOnlineGain(name,gain){
+  if(serverAvailable){
+    try{
+      const r=await fetch('/api/cashout',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({name,gain})
+      });
+
+      if(r.ok){
+        return {
+          ok:true,
+          data:await r.json(),
+          shared:true
+        };
+      }
+    }catch{}
+  }
+
+  return {
+    ok:true,
+    data:addToLocalRanking(name,gain),
+    shared:false
+  };
+}
+
+async function openRanking(){
+  els.rankPanel.style.display='block';
+  await renderRanking();
+}
+
+async function renderRanking(){
+  let data=[];
+
+  if(mode==='room'){
+    data=await getRoomRanking();
+    document.getElementById('rankingTitle').textContent='🏆 Ranking da sala';
+    document.getElementById('rankHint').textContent='Ordenado pelo lucro atual da sessão';
+  }else{
+    data=await getRanking();
+    document.getElementById('rankingTitle').textContent='🏆 Ranking global';
+  }
+
+  if(!data.length){
+    els.rankList.innerHTML='<div class="ranking-row"><div class="pos">—</div><div class="rank-name">Ainda não há jogadores registrados.</div><div class="rank-money">0,00</div></div>';
+    return;
+  }
+
+  const sorted=mode==='room' ? [...data].sort((a,b)=>Number(b.profit||0)-Number(a.profit||0)) : data.sort((a,b)=>(b.gain||0)-(a.gain||0));
+  els.rankList.innerHTML=sorted
+    .map((r,i)=>`
+      <div class="ranking-row">
+        <div class="pos">#${i+1}</div>
+        <div class="rank-name">${escapeHtml(r.name)}</div>
+        <div class="rank-money">${mode==='room'?profitText(r.profit):money(r.gain||0)}</div>
+      </div>
+    `).join('');
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>'"]/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    "'":'&#39;',
+    '"':'&quot;'
+  }[c]));
+}
+
+async function cashOut(){
+  if(spinning)return;
+
+  const gain=sessionWon;
+
+  if(gain<=0){
+    toast('Você ainda não tem ganhos para sacar.');
+    return;
+  }
+
+  els.cashout.disabled=true;
+
+  let message='';
+
+  if(mode==='online'){
+    const result=await registerOnlineGain(playerName,gain);
+    message=result.shared
+      ? `${money(gain)} créditos registrados no ranking global!`
+      : `${money(gain)} créditos registrados no ranking local.`;
+  }else if(mode==='room'){
+    // Primeiro atualiza a sala; só depois registra o mesmo ganho no ranking global.
+    // Assim evitamos deixar o ranking global com um ganho que a sala recusou.
+    const roomResult=await registerRoomGain(gain);
+
+    if(!roomResult.ok){
+      els.cashout.disabled=false;
+      toast(roomResult.data?.error||'Não foi possível atualizar a sala.');
+      return;
+    }
+
+    await registerOnlineGain(playerName,gain);
+    message=`Saque fictício de ${money(gain)} créditos concluído. Ranking da sala e ranking global atualizados.`;
+  }else{
+    message=`Saque fictício de ${money(gain)} créditos concluído.`;
+  }
+
+  addHistory(`💸 Sessão encerrada com saque fictício de ${money(gain)} créditos.`);
+  sessionWon=0;
+  balance=0;
+  update();
+
+  if(mode==='room'){
+    await leaveRoom(true);
+  }
+
+  show('menuScreen');
+  toast(`${message} Crie uma nova sessão para jogar novamente.`);
+}
+
+document.getElementById('double').onclick=()=>{
+  if(spinning)return;
+  const v=Math.floor(Number(els.bet.value)||0)*2;
+  if(v>0)els.bet.value=v;
+  update();
+};
+
+document.getElementById('spin').onclick=()=>{
+  if(spinning)return;
+
+  const wager=Math.floor(Number(els.bet.value)||0);
+
+  if(wager<1){
+    els.msg.textContent='Informe um valor válido.';
+    return;
+  }
+
+  if(wager>balance){
+    els.msg.textContent='Saldo fictício insuficiente.';
+    return;
+  }
+
+  balance-=wager;
+  totalWagered+=wager;
+  update();
+
+  spinning=true;
+  document.getElementById('spin').disabled=true;
+  document.getElementById('double').disabled=true;
+
+  els.prize.textContent='0,00';
+  els.msg.textContent='🎰 Girando...';
+
+  const cells=[...els.reels.children];
+
+  cells.forEach(c=>{
+    c.classList.remove('win');
+    c.dataset.result='';
+    c.innerHTML='<span>❔</span>';
+  });
+
+  const result=[];
+  for(let i=0;i<5;i++)result.push(drawSymbol());
+
+  cells.forEach((cell,i)=>{
+    let count=0;
+
+    const timer=setInterval(()=>{
+      cell.innerHTML='<span>'+symbols[Math.floor(Math.random()*symbols.length)].e+'</span>';
+      count++;
+
+      if(count>18+i*7){
+        clearInterval(timer);
+        cell.innerHTML='<span>'+result[i].e+'</span>';
+        cell.dataset.result=result[i].name;
+
+        if(i===4)finish(result,wager);
+      }
+    },75);
+  });
+};
+
+function finish(result,wager){
+  setTimeout(()=>{
+    spinning=false;
+    document.getElementById('spin').disabled=false;
+    document.getElementById('double').disabled=false;
+
+    sessionSpins++;
+
+    const counts={};
+    result.forEach(s=>counts[s.name]=(counts[s.name]||0)+1);
+
+    let best=null;
+
+    for(const s of symbols){
+      if(
+        (counts[s.name]||0)>=3 &&
+        (!best || counts[s.name]>best.count)
+      ){
+        best={s,count:counts[s.name]};
+      }
+    }
+
+    let win=0;
+
+    if(best){
+      win=wager*best.s.mult*
+        (best.count===4?2:best.count===5?4:1);
+    }
+
+    if(win){
+      balance+=win;
+      sessionWon+=win;
+      els.prize.textContent=money(win);
+      els.last.textContent=money(win);
+      els.msg.textContent=`🎉 ${best.count}x ${best.s.e} — prêmio de ${money(win)} créditos!`;
+
+      [...els.reels.children].forEach((c,i)=>{
+        if(result[i].name===best.s.name)c.classList.add('win');
+      });
+
+      addHistory(
+        `🎉 ${best.count} ${best.s.e} — aposta ${money(wager)} — recebeu ${money(win)}`
+      );
+    }else{
+      els.prize.textContent='0,00';
+      els.last.textContent='0,00';
+      els.msg.textContent='Sem combinação vencedora nesta rodada.';
+      addHistory(`❌ Sem prêmio — rodada de ${money(wager)} créditos`);
+    }
+
+    update();
+    queueRoomScoreSync();
+  },250);
+}
+
+async function restoreRoomSession(){
+  try{
+    const saved=JSON.parse(sessionStorage.getItem('fortuneRabbitRoom')||'null');
+    if(!saved?.code||!saved?.playerId)return;
+
+    roomCode=saved.code;
+    roomPlayerId=saved.playerId;
+    playerName=String(saved.name||'Jogador').slice(0,18);
+
+    const r=await roomApi('/api/rooms/'+encodeURIComponent(roomCode));
+    if(!r.ok||!r.data.players?.some(p=>p.id===roomPlayerId)){
+      clearRoomSession();
+      roomCode='';
+      roomPlayerId='';
+      return;
+    }
+
+    roomPlayers=r.data.players||[];
+    roomHost=!!r.data.youAreHost;
+    mode='room';
+    renderRoomLobby();
+    startRoomPolling();
+    connectRoomSocket();
+    renderCompetition();
+  }catch{
+    clearRoomSession();
+  }
+}
+
+restoreRoomSession();
+
+symbols.forEach(s=>{
+  document.getElementById('symbols').innerHTML+=`
+    <div class="sym">
+      <span>${s.e}</span>${s.name}<br><b>${s.mult}x</b>
+    </div>
+  `;
+});
+</script>
+</body>
+</html>
